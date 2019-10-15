@@ -1,0 +1,35 @@
+CONTENIDO DE LA DISTRIBUCIÓN
+
+* Directorio raiz de la distribución
+    - bd.sql: archivo SQL de creación de la base de datos (no se utiliza)
+    - liga-admin-categorias.php: script para el mantenimiento de las categorías por parte del administrador.
+    - liga-admin-passwd.php: script para que el administrador cambie su contraseña.
+    - liga-admin-usuarios.php: script para administrar los usuarios registrados.
+    - liga-calendario.php: script que muestra el calendario de una liga determinada.
+    - liga-clasificacion.php: script que construye y muestra la clasificación de una liga determinada.
+    - liga-config-equipos.php: script para la administración (por parte del usuario creador de la liga) de los equipos que participan en una liga.
+    - liga-config-jornadas.php: script para la administración (por parte del usuario creador de la liga) las jornadas, junto con sus partidos y resultados.
+    - liga-config-liga.php: script que crea o modifica los parámetros generales de una liga (sistema de puntación, nombre, etc.).
+    - liga-equipos.php: script que muestra los equipos participantes en una liga determinada.
+    - liga-error.php: script que presenta mensajes de error.
+    - liga-index.php: script de inicio. En realidad redirige a liga-index.php.
+    - liga-instalar.php: script para instalar el sitio web.
+    - liga-logout.php: script que destruye la sesión de un usuario registrado.
+    - liga-mis-ligas.php: página principal de un usuario cuando inicia sesión. Muestra una tabla con todas las ligas del usuario logueado.
+    - liga-registro.php: script que se encarga de presentar el formulario de registro y de llevarlo a cabo.
+    - liga-resultados.php: script que construy y muestra el cuadro de resultados de una liga determinada.
+    - liga-todas-ligas.php: script que muestra una tabla con todas las ligas presentes en el sistema.
+    - liga-user-datos.php: script que presenta y trata un formulario para que cada usuario pueda cambiar sus datos personales.
+    - liga-user-passwd.php: script que permite a los usuarios registrados cambiar su contraseña de acceso.
+
+* Contenido del subdirectorio config: contiene un archivo que se crea automáticamente al hacer la instalación del portal. El archivo contiene los parámetros de acceso a la base de datos.
+
+* Contenido del subdirectorio css: hoja de estilo e imágenes utilizadas en la presentación del portal.
+
+* Contenido del subdirectorio icons: iconos utilizados en la presentación del portal.
+
+* Contenido del subdirectorio img: imágenes utilizados en la presentación del portal.
+
+* Contenido del subdirectorio lib: archivos que contienen bibliotecas de funciones javascript (calendarios, validación de formularios, etc.) como funciones php (autenticación de páginas php, funciones varias, etc.).
+
+* Contenido del subdirectorio poweredby: imágenes de las herramientas de desarrollo del portal.
