@@ -4,8 +4,8 @@
 //
 //     Copyright (C) 2005 Sergio Checa Blanco, sergio.checa@gmail.com
 //
-//     Este documento puede ser usado en los términos descritos en la
-//     Licencia Pública GNU versión 2 o posterior.
+//     Este documento puede ser usado en los tï¿½rminos descritos en la
+//     Licencia Pï¿½blica GNU versiï¿½n 2 o posterior.
 //
 //
 //-----------------------------------------------------------------------
@@ -18,7 +18,7 @@ require_once('lib/liga-col-izquierda.php');
 require_once('lib/liga-final.php');
 require_once('config/bd_config.inc.php');
 
-$nivel_acceso = 100; // Definir nivel de acceso para esta página.
+$nivel_acceso = 100; // Definir nivel de acceso para esta pï¿½gina.
 if ($_SESSION['usuario_nivel'] > $nivel_acceso){
   header ("Location: liga-error.php?error=No+dispone+de+permisos+suficientes.+Acceso+denegado.");
   exit;
@@ -46,12 +46,12 @@ if (isset($_GET['action'])) {
     $ptosDerrota    = $_POST['ptosDerrota'];
     
     // Conectar con la base de datos
-    $conn = mysql_connect("$sql_host","$sql_usuario","$sql_pass");
+    $conn = mysqli_connect("$sql_host","$sql_usuario","$sql_pass");
     // Seleccionar la BBDD
-    mysql_select_db("$sql_db",$conn); 
+    mysqli_select_db($conn,"$sql_db");
     // Discernir si se trata de una nueva liga o de una ya existente
     if (isset($_SESSION['idLiga'])) {
-      // Sentencia SQL para actualizar la información de la liga
+      // Sentencia SQL para actualizar la informaciï¿½n de la liga
       $ssql = "UPDATE liga SET
                usuario='".$usuario."',
                nombre='".$nombre."',
@@ -61,7 +61,7 @@ if (isset($_GET['action'])) {
                ptos_derrota='".$ptosDerrota."'
                WHERE ID='".$_SESSION['idLiga']."'";
       // Ejecutar la sentencia
-      $rs = mysql_query($ssql,$conn);
+      $rs = mysqli_query($conn,$ssql);
     }
     else {
       // Sentencia SQL para crear la liga
@@ -75,55 +75,54 @@ if (isset($_GET['action'])) {
                        '".$ptosDerrota."'
                       )";
       // Ejecutar la sentencia
-      $rs = mysql_query($ssql,$conn);
+      $rs = mysqli_query($conn,$ssql);
       // Le damos un mobre a la sesion.
-      session_name($usuarios_sesion);
       // Iniciar la sesion
       session_start();
-      // Establecer la variable de sesión con el ID de la liga recién creada
-      $_SESSION['idLiga'] = mysql_insert_id($conn);
+      // Establecer la variable de sesiï¿½n con el ID de la liga reciï¿½n creada
+      $_SESSION['idLiga'] = mysqli_insert_id($conn);
       if ($_SESSION['idLiga'] == 0) {
-	unset($_SESSION['idLiga']);
+	    unset($_SESSION['idLiga']);
       }
     }
-    // Sentencia SQL para borrar categorías candidatas previas de la liga
+    // Sentencia SQL para borrar categorï¿½as candidatas previas de la liga
     $ssql = "DELETE FROM categoria_candidata
              WHERE liga='".$_SESSION['idLiga']."'";
     // Ejecutar la sentencia
-    $rs = mysql_query($ssql,$conn);
+    $rs = mysqli_query($conn,$ssql);
     if (strlen($_POST['disciplinaPer']) != 0) {
       // Si se ha especificado una disciplina personalizada, se debe insertar en
       // la tabla categoria_candidata
-      // Sentencia SQL para crear la categoría candidata
+      // Sentencia SQL para crear la categorï¿½a candidata
       $ssql = "INSERT INTO categoria_candidata (nombre,liga)
                VALUES (
                        '".$disciplina."',
                        '".$_SESSION['idLiga']."'
                       )";
       // Ejecutar la sentencia
-      $rs = mysql_query($ssql,$conn);
-      // También hay que establece a NULL la categoría de la liga
+      $rs = mysqli_query($conn,$ssql);
+      // Tambiï¿½n hay que establece a NULL la categorï¿½a de la liga
       $ssql = "UPDATE liga SET deporte=NULL
                WHERE ID='".$_SESSION['idLiga']."'";
       // Ejecutar la sentencia
-      $rs = mysql_query($ssql,$conn);
+      $rs = mysqli_query($conn,$ssql);
     }
     else {
-      // Sentencia SQL para obtener el id numérico de la categoría
+      // Sentencia SQL para obtener el id numï¿½rico de la categorï¿½a
       $ssql = "SELECT ID FROM categoria WHERE deporte = '".$disciplina."'";
       // Ejecutar la sentencia
-      $rs = mysql_query($ssql,$conn);
-      $id_categoria = mysql_fetch_array($rs);
-      mysql_free_result($rs);
+      $rs = mysqli_query($conn,$ssql);
+      $id_categoria = mysqli_fetch_array($rs);
+      mysqli_free_result($rs);
       // Sentencia SQL para actualizar la categoria de la liga configurada
       $ssql = "UPDATE liga SET deporte='".$id_categoria['ID']."'
                WHERE ID='".$_SESSION['idLiga']."'";
       // Ejecutar la sentencia
-      $rs = mysql_query($ssql,$conn);
+      $rs = mysqli_query($conn,$ssql);
     }	
 
-    mysql_close();
-    // Volver a presentar la página
+    mysqli_close($conn);
+    // Volver a presentar la pï¿½gina
     header("Location: liga-config-liga.php");
   }
   else if ($_GET['action'] == "nuevaLiga") {
@@ -135,52 +134,52 @@ if (isset($_GET['action'])) {
   }
 }
 
-// Si se está modificando una liga, se carga el formulario con sus parámetros
+// Si se estï¿½ modificando una liga, se carga el formulario con sus parï¿½metros
 if (isset($_SESSION['idLiga']))
 {
-  // Obtener la configuración de la liga
+  // Obtener la configuraciï¿½n de la liga
   
   // Conectar con la base de datos
-  $conn = mysql_connect("$sql_host","$sql_usuario","$sql_pass");
+  $conn = mysqli_connect("$sql_host","$sql_usuario","$sql_pass");
   // Seleccionar la BBDD
-  mysql_select_db("$sql_db",$conn); 
+  mysqli_select_db($conn,"$sql_db");
   
-  // Sentencia SQL para obtener los datos de configuración de la liga
+  // Sentencia SQL para obtener los datos de configuraciï¿½n de la liga
   $ssql = "SELECT * FROM liga WHERE ID='".$_SESSION['idLiga']."'";
   
   // Ejecutar la sentencia
-  $rs = mysql_query($ssql,$conn);
+  $rs = mysqli_query($conn,$ssql);
   
-  $configLiga = mysql_fetch_array($rs);
-  // Liberar el la memoria de los datos de configuración de la liga
-  mysql_free_result($rs);
+  $configLiga = mysqli_fetch_array($rs);
+  // Liberar el la memoria de los datos de configuraciï¿½n de la liga
+  mysqli_free_result($rs);
 
   // Obtener el nombre personalizado de la categoria de la liga (si lo tuviese)
   // Sentencia SQL para obtener el nombre personalizado de la categoria de la liga
   $ssql = "SELECT nombre FROM categoria_candidata WHERE liga='".$_SESSION['idLiga']."'";
   // Ejecutar la sentencia
-  $rs = mysql_query($ssql,$conn);
-  if (mysql_num_rows($rs) == 0) {
-    // La liga no tiene una categoría temporal, sino que tiene una categoría existente
-    // Buscar el nombre de la categoría
+  $rs = mysqli_query($conn,$ssql);
+  if (mysqli_num_rows($rs) == 0) {
+    // La liga no tiene una categorï¿½a temporal, sino que tiene una categorï¿½a existente
+    // Buscar el nombre de la categorï¿½a
     $ssql = "SELECT categoria.deporte as nombre FROM categoria,liga
              WHERE liga.ID='".$_SESSION['idLiga']."'
              AND   liga.deporte=categoria.ID";
     // Ejecutar la sentencia
-    $rs1 = mysql_query($ssql,$conn);
-    $nombreCategoriaTmp = mysql_fetch_array($rs1);
-    mysql_free_result($rs1);
-    // El nombre de la categoría temporal se pone a vacío
+    $rs1 = mysqli_query($conn,$ssql);
+    $nombreCategoriaTmp = mysqli_fetch_array($rs1);
+    mysqli_free_result($rs1);
+    // El nombre de la categorï¿½a temporal se pone a vacï¿½o
     $nombreCategoriaPer = "";
   }
   else {
-    // El nombre de la categoría aún es temporal
-    $nombreCategoriaTmp = mysql_fetch_array($rs);
+    // El nombre de la categorï¿½a aï¿½n es temporal
+    $nombreCategoriaTmp = mysqli_fetch_array($rs);
     $nombreCategoriaPer = $nombreCategoriaTmp['nombre'];
   }
   $nombreCategoria = $nombreCategoriaTmp['nombre'];
-  mysql_free_result($rs);
-  mysql_close();
+  mysqli_free_result($rs);
+  mysqli_close($conn);
 }
 
 cabecera();
@@ -195,7 +194,7 @@ echo "
     <br/>
 ";
 
-// Presentar el formulario de creación de una liga nueva
+// Presentar el formulario de creaciï¿½n de una liga nueva
 echo "
     <div id=\"navcontainer\">
       <ul id=\"navlist\">
@@ -233,20 +232,20 @@ echo "
               <td class=\"form\">
                 <select name=\"disciplina\">
 ";
-// Obtener el listado de categorías
+// Obtener el listado de categorï¿½as
 
 // Conectar con la base de datos
-$conn = mysql_connect("$sql_host","$sql_usuario","$sql_pass");
+$conn = mysqli_connect("$sql_host","$sql_usuario","$sql_pass");
 // Seleccionar la BBDD
-mysql_select_db("$sql_db",$conn); 
+mysqli_select_db($conn,"$sql_db");
 
 // Sentencia SQL para obtener el listado de categorias deportivas en el sistema
 $ssql = "SELECT deporte FROM categoria ORDER BY deporte";
 
 // Ejecutar la sentencia
-$rs = mysql_query($ssql,$conn);
+$rs = mysqli_query($conn,$ssql);
 
-while($categorias = mysql_fetch_array($rs)) {
+while($categorias = mysqli_fetch_array($rs)) {
   if ($categorias['deporte'] == $nombreCategoria)
     $select = "selected=\"selected\"";
   else
@@ -255,8 +254,8 @@ while($categorias = mysql_fetch_array($rs)) {
   ";
   $indice++;
 }
-mysql_free_result($rs);
-mysql_close();
+mysqli_free_result($rs);
+mysqli_close($conn);
 
 echo "
               </select>

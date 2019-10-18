@@ -1,0 +1,35 @@
+version: "3.2"
+services:
+  php:
+    build: './php/'
+    networks:
+      - backend
+    volumes:
+      - ./webapp/:/var/www/html/
+  apache:
+    build: './apache/'
+    depends_on:
+      - php
+      - mysql
+    networks:
+      - frontend
+      - backend
+    ports:
+      - "8080:80"
+    volumes:
+      - ./webapp/:/var/www/html/
+  mysql:
+    image: mysql:5.6.40
+    networks:
+      - backend
+    environment:
+      MYSQL_ROOT_PASSWORD: rootroot
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      MYSQL_USER: user
+      MYSQL_PASSWORD: mypass
+      MYSQL_DATABASE: ligas
+    volumes:
+      - "./mysql-data:/var/lib/mysql"
+networks:
+  frontend:
+  backend:

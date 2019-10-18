@@ -4,8 +4,8 @@
 //
 //     Copyright (C) 2005 Sergio Checa Blanco, sergio.checa@gmail.com
 //
-//     Este documento puede ser usado en los términos descritos en la
-//     Licencia Pública GNU versión 2 o posterior.
+//     Este documento puede ser usado en los tï¿½rminos descritos en la
+//     Licencia Pï¿½blica GNU versiï¿½n 2 o posterior.
 //
 //
 //-----------------------------------------------------------------------
@@ -54,9 +54,9 @@ echo "
 ";
 
 // Conectar con la base de datos
-$conn = mysql_connect("$sql_host","$sql_usuario","$sql_pass");
+$conn = mysqli_connect("$sql_host","$sql_usuario","$sql_pass");
 // Seleccionar la BBDD
-mysql_select_db("$sql_db",$conn); 
+mysqli_select_db($conn,"$sql_db");
 
 // Sentencia SQL para obtener todas las ligas presentes en el sistema
 $ssql = "
@@ -79,7 +79,7 @@ WHERE ligas.nombre LIKE '%".$cadenaBusqueda."%'
 ";
 
 // Ejecutar la sentencia
-$rs = mysql_query($ssql,$conn);
+$rs = mysqli_query($conn,$ssql);
 
 echo "
     <div align=\"center\">
@@ -100,7 +100,7 @@ echo "
 ";
 
 $indice = 0;
-while($liga = mysql_fetch_array($rs)) {
+while($liga = mysqli_fetch_array($rs)) {
   // Escribir fila a fila cada liga
   ($indice % 2 == 0) ? ($paridad="evenPartido") : ($paridad="oddPartido");
   if ($liga['deporte'] == NULL) {
@@ -121,8 +121,8 @@ while($liga = mysql_fetch_array($rs)) {
   $indice++;
 }
 
-mysql_free_result($rs);
-mysql_close();
+mysqli_free_result($rs);
+mysqli_close($conn);
 
 echo "
     </table>

@@ -29,12 +29,12 @@ if (isset($_GET['action'])) {
     // COMIENZO DE INSTALACION
 
     // Conectar con la base de datos
-    $conn = mysql_connect($sql_host,$sql_login,$sql_pass);
+    $conn = mysqli_connect($sql_host,$sql_login,$sql_pass);
     if (!$conn) {
-      die("No se pudo conectar con el servidor de bases de datos: ".mysql_error());
+      die("No se pudo conectar con el servidor de bases de datos: ".mysqli_connect_error());
     }
-    if (!mysql_query("CREATE DATABASE ".$sql_db)) {
-      die("No se pudo crear la base de datos: ".mysql_error());
+    if (!mysqli_query($conn, "CREATE DATABASE IF NOT EXISTS ".$sql_db)) {
+      die("No se pudo crear la base de datos: ".mysqli_error($conn));
     }
     
     $content = "<?php
@@ -52,7 +52,7 @@ if (isset($_GET['action'])) {
 ";    
     if (crear_archivo("config/bd_config.inc.php", $content)){
       // Seleccionar la BBDD
-      mysql_select_db($sql_db,$conn);
+      mysqli_select_db($conn, $sql_db);
       $crea_usuario = 
 "
 CREATE TABLE usuario (
@@ -67,9 +67,9 @@ CREATE TABLE usuario (
   direccion TINYTEXT,
   PRIMARY KEY  (ID),
   UNIQUE KEY ID (ID)
-) TYPE=INNODB
+)
 ";
-      mysql_query($crea_usuario,$conn);
+      mysqli_query($conn, $crea_usuario);
 
       $crea_categoria = 
 "
@@ -79,9 +79,9 @@ CREATE TABLE categoria (
   PRIMARY KEY (ID),
   UNIQUE KEY ID (ID),
   UNIQUE KEY (deporte)
-) TYPE=INNODB
+)
 ";
-      mysql_query($crea_categoria,$conn);
+      mysqli_query($conn, $crea_categoria);
 
       $crea_liga = 
 "
@@ -102,9 +102,9 @@ CREATE TABLE liga (
     ON DELETE CASCADE ON UPDATE CASCADE,
   PRIMARY KEY  (ID),
   UNIQUE KEY ID (ID)
-) TYPE=INNODB
+)
 ";
-      mysql_query($crea_liga,$conn);
+      mysqli_query($conn, $crea_liga);
 
       $crea_candidata = 
 "
@@ -117,9 +117,9 @@ CREATE TABLE categoria_candidata (
     ON DELETE CASCADE ON UPDATE CASCADE,
   PRIMARY KEY (ID),
   UNIQUE KEY ID (ID)
-) TYPE=INNODB
+)
 ";
-      mysql_query($crea_candidata,$conn);
+      mysqli_query($conn, $crea_candidata);
 
       $crea_equipo = 
 "
@@ -133,9 +133,9 @@ CREATE TABLE equipo (
   INDEX (liga),
   FOREIGN KEY (liga) REFERENCES liga (ID)
     ON DELETE CASCADE ON UPDATE CASCADE
-) TYPE=INNODB
+)
 ";
-      mysql_query($crea_equipo,$conn);
+      mysqli_query($conn, $crea_equipo);
 
       $crea_jornada = 
 "
@@ -147,9 +147,9 @@ CREATE TABLE jornada (
   FOREIGN KEY (liga) REFERENCES liga (ID)
     ON DELETE CASCADE ON UPDATE CASCADE,
   PRIMARY KEY  (ID, liga)
-) TYPE=INNODB
+)
 ";
-      mysql_query($crea_jornada,$conn);
+      mysqli_query($conn, $crea_jornada);
 
       $crea_partido = 
 "
@@ -167,9 +167,9 @@ CREATE TABLE partido (
   FOREIGN KEY (jornada, liga) REFERENCES jornada (ID, liga)
     ON DELETE CASCADE ON UPDATE CASCADE,
   PRIMARY KEY  (ID, jornada, liga)
-) TYPE=INNODB
+)
 ";
-      mysql_query($crea_partido,$conn);
+      mysqli_query($conn, $crea_partido);
 
       $crea_juega = 
 "
@@ -183,20 +183,20 @@ CREATE TABLE juega (
   FOREIGN KEY (partido, jornada, liga) REFERENCES partido (ID, jornada, liga)
     ON DELETE CASCADE ON UPDATE CASCADE,
   PRIMARY KEY  (partido, jornada, liga)
-) TYPE=INNODB
+)
 ";
-      mysql_query($crea_juega,$conn);
+      mysqli_query($conn, $crea_juega);
 
       // Crear la cuenta de administrador
       $sql_admin = "INSERT INTO usuario (login,password,nombre,nivel_acceso)
                     VALUES ('admin',md5('".$admin_pass."'),'Administrador',0)";
-      mysql_query($sql_admin,$conn);
+      mysqli_query($conn, $sql_admin);
 
-      mysql_close();
+      mysqli_close($conn);
       Header("Location: liga-index.php");
     }
     else {
-      mysql_close($conn);
+      mysqli_close($conn);
       die("No se pudo crear el fichero de configuración.<br/>Asegurese de que el directorio config tiene permisos de escritura");
     }
   }
@@ -245,15 +245,7 @@ echo "
         <tr>
           <td class=\"form\">Contrase&ntilde;a de acceso a la base de datos: <font color=\"red\">*</font></td>
           <td class=\"form\">
-            <input type=\"password\" name=\"sql_pass1\" value=\"\" size=\"60\" maxlength=\"9\"
-             onChange=\"quitarBlancos(this);\"/>
-          </td>
-        </tr>
-        <tr>
-          <td class=\"form\">Repita la contrase&ntilde;a: <font color=\"red\">*</font></td>
-          <td class=\"form\">
-            <input type=\"password\" name=\"sql_pass2\" value=\"\" size=\"60\" maxlength=\"255\"
-             onChange=\"quitarBlancos(this);\"/>
+            <input type=\"password\" name=\"sql_pass1\" value=\"\" size=\"60\" maxlength=\"255\"/>
           </td>
         </tr>
         <tr>

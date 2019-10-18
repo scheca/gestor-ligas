@@ -4,8 +4,8 @@
 //
 //     Copyright (C) 2005 Sergio Checa Blanco, sergio.checa@gmail.com
 //
-//     Este documento puede ser usado en los términos descritos en la
-//     Licencia Pública GNU versión 2 o posterior.
+//     Este documento puede ser usado en los tï¿½rminos descritos en la
+//     Licencia Pï¿½blica GNU versiï¿½n 2 o posterior.
 //
 //
 //-----------------------------------------------------------------------
@@ -18,16 +18,16 @@ require_once('lib/liga-col-izquierda.php');
 require_once('lib/liga-final.php');
 require_once('config/bd_config.inc.php');
 
-$nivel_acceso = 100; // Definir nivel de acceso para esta página.
+$nivel_acceso = 100; // Definir nivel de acceso para esta pï¿½gina.
 if ($_SESSION['usuario_nivel'] > $nivel_acceso){
   header ("Location: liga-error.php?error=No+dispone+de+permisos+suficientes.+Acceso+denegado.");
   exit;
 }
 
-// Comprobar que se está trabajando sobre una liga en particular
+// Comprobar que se estï¿½ trabajando sobre una liga en particular
 if (!isset($_SESSION['idLiga']))
 {
-  header ("Location: liga-error.php?error=Acceso+denegado+a+la+creación+de+equipos.");
+  header ("Location: liga-error.php?error=Acceso+denegado+a+la+creaciï¿½n+de+equipos.");
   exit;
 }
 
@@ -45,39 +45,39 @@ if (isset($_GET['action'])) {
     $nombre  = $_POST['nombreEquipo'];
     $campo   = $_POST['campo'];
     // Conectar con la base de datos
-    $conn = mysql_connect("$sql_host","$sql_usuario","$sql_pass");
+    $conn = mysqli_connect("$sql_host","$sql_usuario","$sql_pass");
     // Seleccionar la BBDD
-    mysql_select_db("$sql_db",$conn); 
+    mysqli_select_db($conn,"$sql_db");
     // Discernir si se trata de una nueva liga o de una ya existente
-    // Sentencia SQL para actualizar la información de la liga
+    // Sentencia SQL para actualizar la informaciï¿½n de la liga
     $ssql = "INSERT INTO equipo (nombre,campo,liga)
              VALUES ('".$nombre."','".$campo."','".$_SESSION['idLiga']."')";
     // Ejecutar la sentencia
-    $rs = mysql_query($ssql,$conn);
-    mysql_close();
-    // Volver a presentar la página
+    $rs = mysqli_query($conn,$ssql);
+    mysqli_close($conn);
+    // Volver a presentar la pï¿½gina
     header("Location: liga-config-equipos.php?order=".$order);
 
   }
   else if ($_GET['action'] == "borrar") {
     $id_a_borrar   = $_GET['id'];
     // Conectar con la base de datos
-    $conn = mysql_connect("$sql_host","$sql_usuario","$sql_pass");
+    $conn = mysqli_connect("$sql_host","$sql_usuario","$sql_pass");
     // Seleccionar la BBDD
-    mysql_select_db("$sql_db",$conn); 
+    mysqli_select_db($conn,"$sql_db");
     // Sentencia SQL para borrar el equipo
     $ssql = "DELETE FROM equipo WHERE ID=".$id_a_borrar;
     // Ejecutar la sentencia
-    $rs = mysql_query($ssql,$conn);
-    mysql_close();
-    // Volver a presentar la página
+    $rs = mysqli_query($conn,$ssql);
+    mysqli_close($conn);
+    // Volver a presentar la pï¿½gina
     header("Location: liga-config-equipos.php?order=".$order);
   }
   else if ($_GET['action'] == "editarEquipo") {
     $idEquipo   = $_GET['id'];
-    // Establecer una variable de sesión con el ID del equipo a editar
+    // Establecer una variable de sesiï¿½n con el ID del equipo a editar
     $_SESSION['idEquipo'] = $idEquipo;
-    // Volver a presentar la página
+    // Volver a presentar la pï¿½gina
     header("Location: liga-config-equipos.php?order=".$order);
   }
   else if ($_GET['action'] == "cambiarEquipo") {
@@ -86,9 +86,9 @@ if (isset($_GET['action'])) {
     $idEquipo = $_SESSION['idEquipo'];
 
     // Conectar con la base de datos
-    $conn = mysql_connect("$sql_host","$sql_usuario","$sql_pass");
+    $conn = mysqli_connect("$sql_host","$sql_usuario","$sql_pass");
     // Seleccionar la BBDD
-    mysql_select_db("$sql_db",$conn); 
+    mysqli_select_db($conn,"$sql_db");
     
     $ssql = "UPDATE equipo
              SET nombre = '".$nombre."',
@@ -96,12 +96,12 @@ if (isset($_GET['action'])) {
              WHERE ID='".$idEquipo."' AND liga='".$_SESSION['idLiga']."'";
 
     // Ejecutar la sentencia
-    $rs = mysql_query($ssql,$conn);
-    mysql_close();
+    $rs = mysqli_query($conn,$ssql);
+    mysqli_close($conn);
 
-    // Borrar la variable de sesión que guarda el ID del equipo a editar
+    // Borrar la variable de sesiï¿½n que guarda el ID del equipo a editar
     unset($_SESSION['idEquipo']);
-    // Volver a presentar la página
+    // Volver a presentar la pï¿½gina
     header("Location: liga-config-equipos.php?order=".$order);
   }
 }
@@ -119,7 +119,7 @@ echo "
     <br/>
 ";
 
-// Presentar el formulario de creación de equipos
+// Presentar el formulario de creaciï¿½n de equipos
 echo "
     <div id=\"navcontainer\">
       <ul id=\"navlist\">
@@ -152,17 +152,17 @@ echo "
 // Obtener el listado de equipos
 
 // Conectar con la base de datos
-$conn = mysql_connect("$sql_host","$sql_usuario","$sql_pass");
+$conn = mysqli_connect("$sql_host","$sql_usuario","$sql_pass");
 // Seleccionar la BBDD
-mysql_select_db("$sql_db",$conn); 
+mysqli_select_db($conn,"$sql_db");
 
 // Sentencia SQL para obtener el listado de equipos que participan en la liga
 $ssql = "SELECT ID,nombre,campo FROM equipo WHERE liga='".$_SESSION['idLiga']."' ORDER BY ".$order;
 
 // Ejecutar la sentencia
-$rs = mysql_query($ssql,$conn);
+$rs = mysqli_query($conn,$ssql);
 
-// Comprobar si se tiene que editar los datos de algún partido
+// Comprobar si se tiene que editar los datos de algï¿½n partido
 if (isset($_SESSION['idEquipo'])) {
   $idEquipoEdicion = $_SESSION['idEquipo'];
 }
@@ -171,7 +171,7 @@ else {
 }
 
 $indice = 0;
-while($equipo = mysql_fetch_array($rs)) {
+while($equipo = mysqli_fetch_array($rs)) {
   // Escribir fila a fila cada equipo
   ($indice % 2 == 0) ? ($paridad="even") : ($paridad="odd");
   $link_borrado = "liga-config-equipos.php?order=".$order."&action=borrar&id=".$equipo['ID'];
@@ -228,8 +228,8 @@ while($equipo = mysql_fetch_array($rs)) {
   ";
   $indice++;
 }
-mysql_free_result($rs);
-mysql_close();
+mysqli_free_result($rs);
+mysqli_close($conn);
 
 echo "
     </table>

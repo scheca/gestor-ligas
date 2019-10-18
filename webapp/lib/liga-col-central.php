@@ -4,8 +4,8 @@
 //
 //     Copyright (C) 2005 Sergio Checa Blanco, sergio.checa@gmail.com
 //
-//     Este documento puede ser usado en los términos descritos en la
-//     Licencia Pública GNU versión 2 o posterior.
+//     Este documento puede ser usado en los tï¿½rminos descritos en la
+//     Licencia Pï¿½blica GNU versiï¿½n 2 o posterior.
 //
 //
 //-----------------------------------------------------------------------
@@ -97,7 +97,7 @@ de una liga y su clasificaci&oacute;n, ya que &eacute;sta se obtiene de los resu
         </div>
         </div>
         <br/>
-        El autor de este sitio web es Sergio Checa Blanco. Para ponerse en contacto conmigo se puede hacer a trav$eacute;s
+        El autor de este sitio web es Sergio Checa Blanco. Para ponerse en contacto conmigo se puede hacer a trav&eacute;s
 de la direcci&oacute;n: <b><i>sergio DOT checa AT gmail DOT com</i></b>. (El formato anterior se utiliza para evitar el
  env&iacute;o de spam sobre dicha cuenta; se debe sustituir DOT por . y AT por @),
         <br/>
@@ -123,7 +123,7 @@ de la direcci&oacute;n: <b><i>sergio DOT checa AT gmail DOT com</i></b>. (El for
         <div align=\"center\">
 <!-- Licencia de Creative Commons -->
 <a rel=\"license\" href=\"http://creativecommons.org/licenses/by-nc-sa/2.5/es/\"><img alt=\"Licencia de Creative Commons\" border=\"0\" src=\"http://creativecommons.org/images/public/somerights20.png\" /></a><br />
-Esta obra está bajo una <a rel=\"license\" href=\"http://creativecommons.org/licenses/by-nc-sa/2.5/es/\">licencia de Creative Commons</a>.
+Esta obra est&aacute; bajo una <a rel=\"license\" href=\"http://creativecommons.org/licenses/by-nc-sa/2.5/es/\">licencia de Creative Commons</a>.
 <!-- /Licencia de Creative Commons -->
 
 

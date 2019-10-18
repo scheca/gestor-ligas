@@ -4,8 +4,8 @@
 //
 //     Copyright (C) 2005 Sergio Checa Blanco, sergio.checa@gmail.com
 //
-//     Este documento puede ser usado en los términos descritos en la
-//     Licencia Pública GNU versión 2 o posterior.
+//     Este documento puede ser usado en los tï¿½rminos descritos en la
+//     Licencia Pï¿½blica GNU versiï¿½n 2 o posterior.
 //
 //
 //-----------------------------------------------------------------------
@@ -18,7 +18,7 @@ require_once('lib/liga-col-izquierda.php');
 require_once('lib/liga-final.php');
 require_once('config/bd_config.inc.php');
 
-$nivel_acceso = 100; // Definir nivel de acceso para esta página.
+$nivel_acceso = 100; // Definir nivel de acceso para esta pï¿½gina.
 if ($_SESSION['usuario_nivel'] > $nivel_acceso){
   header ("Location: liga-error.php?error=No+dispone+de+permisos+suficientes.+Acceso+denegado.");
   exit;
@@ -36,18 +36,18 @@ if (isset($_GET['action'])) {
     $direccion = $_POST['direccion'];
     
     // Conectar con la base de datos
-    $conn = mysql_connect("$sql_host","$sql_usuario","$sql_pass");
+    $conn = mysqli_connect("$sql_host","$sql_usuario","$sql_pass");
     // Seleccionar la BBDD
-    mysql_select_db("$sql_db",$conn); 
+    mysqli_select_db($conn,"$sql_db");
     
     // Sentencia SQL para comprobar si ya existe un usuario con ese login
     $ssql = "SELECT * FROM usuario WHERE login='$login'";
 
     // Ejecutar la sentencia
-    $rs = mysql_query($ssql,$conn);
+    $rs = mysqli_query($conn,$ssql);
 
-    if (mysql_num_rows($rs)==0){
-      // Sentencia SQL para actualizar la información del usuario
+    if (mysqli_num_rows($rs)==0){
+      // Sentencia SQL para actualizar la informaciï¿½n del usuario
       $ssql = "UPDATE usuario SET
                login='".$login."',
                nombre='".$nombre."',
@@ -58,13 +58,13 @@ if (isset($_GET['action'])) {
                WHERE ID='".$id."'";
 
       // Ejecutar la sentencia de insercion
-      $rs = mysql_query($ssql,$conn);
-      mysql_close();
+      $rs = mysqli_query($conn,$ssql);
+      mysqli_close($conn);
       header ("Location: liga-user-datos.php");
       die;
     }
     else {
-      mysql_close();
+      mysqli_close($conn);
       // Si ya existe un usuario con ese login, se debe indicar el error
       header ("Location: liga-user-datos.php?login=$login&status=wrong");
       die;
@@ -86,23 +86,23 @@ echo "
     <h2>Modificar datos personales</h2>
 ";
 
-// Obtener la información del usuario que se quiere editar
+// Obtener la informaciï¿½n del usuario que se quiere editar
 	
 // Conectar con la base de datos
-$conn = mysql_connect("$sql_host","$sql_usuario","$sql_pass");
+$conn = mysqli_connect("$sql_host","$sql_usuario","$sql_pass");
 // Seleccionar la BBDD
-mysql_select_db("$sql_db",$conn); 
+mysqli_select_db($conn,"$sql_db");
     
 // Sentencia SQL para obtener el listado de usuarios (menos el admin)
 $ssql = "SELECT login,nombre,apellidos,email,direccion,telefono FROM usuario WHERE ID='".$_SESSION['usuario_id']."'";
    
 // Ejecutar la sentencia
-$rs = mysql_query($ssql,$conn);
-$usuario = mysql_fetch_array($rs);
-mysql_free_result($rs);
-mysql_close();
+$rs = mysqli_query($conn,$ssql);
+$usuario = mysqli_fetch_array($rs);
+mysqli_free_result($rs);
+mysqli_close($conn);
 
-// Presentar el formulario de edición de usuarios
+// Presentar el formulario de ediciï¿½n de usuarios
 echo "
     <h3>Si lo desea, puede modificar sus datos personales</h3>
     <div align=\"center\">

@@ -4,8 +4,8 @@
 //
 //     Copyright (C) 2005 Sergio Checa Blanco, sergio.checa@gmail.com
 //
-//     Este documento puede ser usado en los términos descritos en la
-//     Licencia Pública GNU versión 2 o posterior.
+//     Este documento puede ser usado en los tï¿½rminos descritos en la
+//     Licencia Pï¿½blica GNU versiï¿½n 2 o posterior.
 //
 //
 //-----------------------------------------------------------------------
@@ -28,30 +28,30 @@ if (isset($_GET['idLiga'])) {
   $idLiga = $_GET['idLiga'];
 
   // Conectar con la base de datos
-  $conn = mysql_connect("$sql_host","$sql_usuario","$sql_pass");
+  $conn = mysqli_connect("$sql_host","$sql_usuario","$sql_pass");
   // Seleccionar la BBDD
-  mysql_select_db("$sql_db",$conn); 
+  mysqli_select_db($conn,"$sql_db");
 
   // Sentencia SQL para obtener los datos de la liga
   $ssql = "SELECT nombre FROM liga WHERE ID='".$idLiga."'";
 
   // Ejecutar la sentencia
-  $rs = mysql_query($ssql,$conn);
+  $rs = mysqli_query($conn,$ssql);
 
-  if (mysql_num_rows($rs) <= 0){
-    mysql_free_result($rs);
-    mysql_close();
-    // Presentar la página de todas las ligas
+  if (mysqli_num_rows($rs) <= 0){
+    mysqli_free_result($rs);
+    mysqli_close($conn);
+    // Presentar la pï¿½gina de todas las ligas
     header("Location: liga-todas-ligas.php");
     die;
   }
-  $datosLiga = mysql_fetch_array($rs);
-  mysql_free_result($rs);
-  mysql_close();
+  $datosLiga = mysqli_fetch_array($rs);
+  mysqli_free_result($rs);
+  mysqli_close($conn);
 }
 else
 {
-  // Presentar la página de todas las ligas
+  // Presentar la pï¿½gina de todas las ligas
   header("Location: liga-todas-ligas.php");
   die;
 }
@@ -94,18 +94,18 @@ echo "
 // Obtener el listado de jornadas
 
 // Conectar con la base de datos
-$conn = mysql_connect("$sql_host","$sql_usuario","$sql_pass");
+$conn = mysqli_connect("$sql_host","$sql_usuario","$sql_pass");
 // Seleccionar la BBDD
-mysql_select_db("$sql_db",$conn); 
+mysqli_select_db($conn,"$sql_db");
 
 // Sentencia SQL para obtener el listado de jornadas ya incluidas en la liga
 $ssql = "SELECT ID,fecha FROM jornada WHERE liga='".$idLiga."'";
 
 // Ejecutar la sentencia
-$rs = mysql_query($ssql,$conn);
+$rs = mysqli_query($conn,$ssql);
 
 $indice = 0;
-while($jornada = mysql_fetch_array($rs)) {
+while($jornada = mysqli_fetch_array($rs)) {
   // Escribir fila a fila cada jornada
   ($indice % 2 == 0) ? ($paridad="evenJornada") : ($paridad="oddJornada");
   echo "
@@ -121,7 +121,7 @@ while($jornada = mysql_fetch_array($rs)) {
     ";
   $indice++;
 }
-mysql_free_result($rs);
+mysqli_free_result($rs);
 
 echo "
       </table>
@@ -159,7 +159,7 @@ if (isset($_GET['idJornada'])) {
   ";
 
   // Ejecutar la sentencia
-  $rs = mysql_query($ssql,$conn);
+  $rs = mysqli_query($conn,$ssql);
 
   echo "
       <div align=\"center\">
@@ -187,7 +187,7 @@ if (isset($_GET['idJornada'])) {
   ";
 
   $indice = 0;
-  while($partido = mysql_fetch_array($rs)) {
+  while($partido = mysqli_fetch_array($rs)) {
     // Escribir fila a fila cada partido
     ($indice % 2 == 0) ? ($paridad="evenPartido") : ($paridad="oddPartido");
     echo "
@@ -203,7 +203,7 @@ if (isset($_GET['idJornada'])) {
     ";
     $indice++;
   }
-  mysql_free_result($rs);
+  mysqli_free_result($rs);
   echo "
     </table>
     </div>
@@ -211,7 +211,7 @@ if (isset($_GET['idJornada'])) {
   ";
 } //if
 
-mysql_close();
+mysqli_close($conn);
 
 echo "
     </div>

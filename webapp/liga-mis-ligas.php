@@ -4,8 +4,8 @@
 //
 //     Copyright (C) 2005 Sergio Checa Blanco, sergio.checa@gmail.com
 //
-//     Este documento puede ser usado en los términos descritos en la
-//     Licencia Pública GNU versión 2 o posterior.
+//     Este documento puede ser usado en los tï¿½rminos descritos en la
+//     Licencia Pï¿½blica GNU versiï¿½n 2 o posterior.
 //
 //
 //-----------------------------------------------------------------------
@@ -19,12 +19,10 @@ require_once('lib/liga-col-central.php');
 require_once('lib/liga-final.php');
 
 require_once('config/bd_config.inc.php');
-// Usamos la sesion de nombre definido.
-session_name($usuarios_sesion);
 // Iniciamos el uso de sesiones
 session_start();
 
-$nivel_acceso = 100; // Definir nivel de acceso para esta página.
+$nivel_acceso = 100; // Definir nivel de acceso para esta pï¿½gina.
 if ($_SESSION['usuario_nivel'] > $nivel_acceso){
   header ("Location: liga-error.php?error=No+dispone+de+permisos+suficientes.+Acceso+denegado.");
   exit;
@@ -32,12 +30,12 @@ if ($_SESSION['usuario_nivel'] > $nivel_acceso){
 
 // Comprobar si se ha iniciado sesion
 if (!isset($_SESSION['usuario_login']) || !isset($_SESSION['usuario_password'])) {
-  header ("Location: liga-error.php?error=Acceso+denegado+a+la+página+personal+de+ligas.");
+  header ("Location: liga-error.php?error=Acceso+denegado+a+la+pï¿½gina+personal+de+ligas.");
   exit;
 }
 else {
   if ($_SESSION['usuario_login'] == "admin") {
-    //Si es el administrador, se le redirige a la página principal
+    //Si es el administrador, se le redirige a la pï¿½gina principal
     header ("Location: liga-index.php");
     exit;
   }
@@ -56,42 +54,42 @@ if (isset($_GET['action'])) {
   if ($_GET['action'] == "borrar") {
     $id_a_borrar   = $_GET['id'];
     // Conectar con la base de datos
-    $conn = mysql_connect("$sql_host","$sql_usuario","$sql_pass");
+    $conn = mysqli_connect("$sql_host","$sql_usuario","$sql_pass");
     // Seleccionar la BBDD
-    mysql_select_db("$sql_db",$conn); 
+    mysqli_select_db($conn,"$sql_db");
 
     // Sentencia SQL para borrar la liga
     $ssql = "DELETE FROM juega WHERE liga=".$id_a_borrar;
     // Ejecutar la sentencia
-    $rs = mysql_query($ssql,$conn);
+    $rs = mysqli_query($conn,$ssql);
 
     // Sentencia SQL para borrar la liga
     $ssql = "DELETE FROM partido WHERE liga=".$id_a_borrar;
     // Ejecutar la sentencia
-    $rs = mysql_query($ssql,$conn);
+    $rs = mysqli_query($conn,$ssql);
 
     // Sentencia SQL para borrar la liga
     $ssql = "DELETE FROM jornada WHERE liga=".$id_a_borrar;
     // Ejecutar la sentencia
-    $rs = mysql_query($ssql,$conn);
+    $rs = mysqli_query($conn,$ssql);
 
     // Sentencia SQL para borrar la liga
     $ssql = "DELETE FROM equipo WHERE liga=".$id_a_borrar;
     // Ejecutar la sentencia
-    $rs = mysql_query($ssql,$conn);
+    $rs = mysqli_query($conn,$ssql);
 
     // Sentencia SQL para borrar la liga
     $ssql = "DELETE FROM categoria_candidata WHERE liga=".$id_a_borrar;
     // Ejecutar la sentencia
-    $rs = mysql_query($ssql,$conn);
+    $rs = mysqli_query($conn,$ssql);
 
     // Sentencia SQL para borrar la liga
     $ssql = "DELETE FROM liga WHERE id=".$id_a_borrar;
     // Ejecutar la sentencia
-    $rs = mysql_query($ssql,$conn);
+    $rs = mysqli_query($conn,$ssql);
 
-    mysql_close();
-    // Volver a presentar la página
+    mysqli_close($conn);
+    // Volver a presentar la pï¿½gina
     header("Location: liga-mis-ligas.php?order=".$order);
   }
 }
@@ -111,9 +109,9 @@ echo "
 ";
 
 // Conectar con la base de datos
-$conn = mysql_connect("$sql_host","$sql_usuario","$sql_pass");
+$conn = mysqli_connect("$sql_host","$sql_usuario","$sql_pass");
 // Seleccionar la BBDD
-mysql_select_db("$sql_db",$conn); 
+mysqli_select_db($conn,"$sql_db");
 
 // Sentencia SQL para obtener todas las ligas presentes en el sistema
 $ssql = "(
@@ -131,7 +129,7 @@ $ssql = "(
         ";
 
 // Ejecutar la sentencia
-$rs = mysql_query($ssql,$conn);
+$rs = mysqli_query($conn,$ssql);
 
 echo "
     <div align=\"center\">
@@ -150,7 +148,7 @@ echo "
 ";
 
 $indice = 0;
-while($liga = mysql_fetch_array($rs)) {
+while($liga = mysqli_fetch_array($rs)) {
   // Escribir fila a fila cada liga
   ($indice % 2 == 0) ? ($paridad="evenJornada") : ($paridad="oddJornada");
   if ($liga['deporte'] == NULL) {
@@ -181,8 +179,8 @@ while($liga = mysql_fetch_array($rs)) {
   $indice++;
 }
 
-mysql_free_result($rs);
-mysql_close();
+mysqli_free_result($rs);
+mysqli_close($conn);
 
 echo "
     </table>

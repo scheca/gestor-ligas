@@ -4,8 +4,8 @@
 //
 //     Copyright (C) 2005 Sergio Checa Blanco, sergio.checa@gmail.com
 //
-//     Este documento puede ser usado en los términos descritos en la
-//     Licencia Pública GNU versión 2 o posterior.
+//     Este documento puede ser usado en los tï¿½rminos descritos en la
+//     Licencia Pï¿½blica GNU versiï¿½n 2 o posterior.
 //
 //
 //-----------------------------------------------------------------------
@@ -36,25 +36,25 @@ if (isset($_GET['action'])) {
     // COMIENZO DEL REGISTRO
 
     // Conectar con la base de datos
-    $conn = mysql_connect("$sql_host","$sql_usuario","$sql_pass");
+    $conn = mysqli_connect("$sql_host","$sql_usuario","$sql_pass");
     // Seleccionar la BBDD
-    mysql_select_db("$sql_db",$conn); 
+    mysqli_select_db($conn,"$sql_db");
 
     // Sentencia SQL para comprobar si ya existe un usuario con ese login
     $ssql = "SELECT * FROM usuario WHERE login='$login'";
 
     // Ejecutar la sentencia
-    $rs = mysql_query($ssql,$conn);
+    $rs = mysqli_query($conn,$ssql);
 
-    if (mysql_num_rows($rs)==0){
-      // Insertar el usuario con su contraseña
+    if (mysqli_num_rows($rs)==0){
+      // Insertar el usuario con su contraseï¿½a
       $ssql =
 	"INSERT INTO usuario
          (login, password, nombre, apellidos, telefono, email, direccion)
          VALUES
          ('$login',md5('$passwd'),'$nombre','$apellidos','$telefono','$email','$direccion')";
       // Ejecutar la sentencia de insercion
-      $rs = mysql_query($ssql,$conn);
+      $rs = mysqli_query($conn,$ssql);
       header ("Location: liga-registro.php?login=$login&status=registered");
       die;
     }
@@ -64,8 +64,8 @@ if (isset($_GET['action'])) {
       die;
     }
   }
-  mysql_free_result($rs);
-  mysql_close($conn);
+  mysqli_free_result($rs);
+  mysqli_close($conn);
 }
 
 

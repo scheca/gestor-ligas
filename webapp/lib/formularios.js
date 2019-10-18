@@ -479,12 +479,6 @@ function checkFormInstall()
         document.form_install.admin_pass1.focus();
         hay_errores = true;
     }
-    if ( document.form_install.sql_pass1.value != document.form_install.sql_pass2.value )
-    {
-        errores = "La contraseña de acceso a la base de datos en incorrecta.\n" + errores;
-        document.form_install.sql_pass1.focus();
-        hay_errores = true;
-    }
     if ( document.form_install.sql_db.value.length == 0 )
     {
         errores = "Debe introducir un nombre para la base de datos nueva.\n" + errores;

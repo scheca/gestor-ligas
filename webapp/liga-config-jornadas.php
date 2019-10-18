@@ -4,8 +4,8 @@
 //
 //     Copyright (C) 2005 Sergio Checa Blanco, sergio.checa@gmail.com
 //
-//     Este documento puede ser usado en los términos descritos en la
-//     Licencia Pública GNU versión 2 o posterior.
+//     Este documento puede ser usado en los tï¿½rminos descritos en la
+//     Licencia Pï¿½blica GNU versiï¿½n 2 o posterior.
 //
 //
 //-----------------------------------------------------------------------
@@ -20,7 +20,7 @@ require_once('config/bd_config.inc.php');
 require_once('lib/liga-funciones-mix.php');
 
 
-$nivel_acceso = 100; // Definir nivel de acceso para esta página.
+$nivel_acceso = 100; // Definir nivel de acceso para esta pï¿½gina.
 if ($_SESSION['usuario_nivel'] > $nivel_acceso){
   header ("Location: liga-error.php?error=No+dispone+de+permisos+suficientes.+Acceso+denegado.");
   exit;
@@ -33,10 +33,10 @@ if (isset($_GET['order']))
   $order = $_GET['order'];
 }
 
-// Comprobar que se está trabajando sobre una liga en particular
+// Comprobar que se estï¿½ trabajando sobre una liga en particular
 if (!isset($_SESSION['idLiga']))
 {
-  header ("Location: liga-error.php?error=Acceso+denegado+a+la+creación+de+equipos.");
+  header ("Location: liga-error.php?error=Acceso+denegado+a+la+creaciï¿½n+de+equipos.");
   exit;
 }
 
@@ -51,17 +51,17 @@ if (isset($_GET['action'])) {
     $resVisitante = $_POST['resVisitante'];
     $campo        = $_POST['campo'];
     // Conectar con la base de datos
-    $conn = mysql_connect("$sql_host","$sql_usuario","$sql_pass");
+    $conn = mysqli_connect("$sql_host","$sql_usuario","$sql_pass");
     // Seleccionar la BBDD
-    mysql_select_db("$sql_db",$conn); 
+    mysqli_select_db($conn,"$sql_db");
     // Sentencia SQL para incluir el nuevo partido
     $ssql = "INSERT INTO partido (local,visitante,fecha,hora,campo,jornada,liga)
              VALUES ('".$idLocal."','".$idVisitante."','".parseFecha($fecha)."','".$hora."','".$campo."','".
                      $_SESSION['idJornada']."','".$_SESSION['idLiga']."')";
     // Ejecutar la sentencia
-    $rs = mysql_query($ssql,$conn);
-    // Obtener el ID del partido recién creado
-    $idPartido = mysql_insert_id($conn);
+    $rs = mysqli_query($conn,$ssql);
+    // Obtener el ID del partido reciï¿½n creado
+    $idPartido = mysqli_insert_id($conn);
 
     // Guardar el resultado (si es que se ha especificado)
     if (strlen($resLocal) > 0 && strlen($resVisitante) > 0) {
@@ -69,40 +69,40 @@ if (isset($_GET['action'])) {
                VALUES ('".$resLocal."','".$resVisitante."','".$idPartido."','".
                        $_SESSION['idJornada']."','".$_SESSION['idLiga']."')";
       // Ejecutar la sentencia
-      $rs = mysql_query($ssql,$conn);
+      $rs = mysqli_query($conn,$ssql);
     }
 
-    mysql_close();
-    // Volver a presentar la página
+    mysqli_close($conn);
+    // Volver a presentar la pï¿½gina
     header("Location: liga-config-jornadas.php?order=".$order);
   }
   else if ($_GET['action'] == "borrarJornada") {
     $id_a_borrar   = $_GET['id'];
     // Conectar con la base de datos
-    $conn = mysql_connect("$sql_host","$sql_usuario","$sql_pass");
+    $conn = mysqli_connect("$sql_host","$sql_usuario","$sql_pass");
     // Seleccionar la BBDD
-    mysql_select_db("$sql_db",$conn); 
+    mysqli_select_db($conn,"$sql_db");
 
     // Sentencia SQL para borrar todos los resultados de partidos de la jornada
     $ssql = "DELETE FROM juega WHERE jornada=".$id_a_borrar." AND liga='".$_SESSION['idLiga']."'";
     // Ejecutar la sentencia
-    $rs = mysql_query($ssql,$conn);
+    $rs = mysqli_query($conn,$ssql);
 
     // Sentencia SQL para borrar todos los partidos de la jornada
     $ssql = "DELETE FROM partido WHERE jornada=".$id_a_borrar." AND liga='".$_SESSION['idLiga']."'";
     // Ejecutar la sentencia
-    $rs = mysql_query($ssql,$conn);
+    $rs = mysqli_query($conn,$ssql);
 
     // Sentencia SQL para borrar la jornada
     $ssql = "DELETE FROM jornada WHERE ID=".$id_a_borrar." AND liga='".$_SESSION['idLiga']."'";
     // Ejecutar la sentencia
-    $rs = mysql_query($ssql,$conn);
-    mysql_close();
-    // Si se está borrando la jornada actual, se debe destruir la variable de sesión
+    $rs = mysqli_query($conn,$ssql);
+    mysqli_close($conn);
+    // Si se estï¿½ borrando la jornada actual, se debe destruir la variable de sesiï¿½n
     if ($id_a_borrar == $_SESSION['idJornada']) {
       unset($_SESSION['idJornada']);
     }
-    // Volver a presentar la página
+    // Volver a presentar la pï¿½gina
     header("Location: liga-config-jornadas.php?order=".$order);
   }
   else if ($_GET['action'] == "nuevaJornada") {
@@ -111,50 +111,50 @@ if (isset($_GET['action'])) {
     $idLiga       = $_SESSION['idLiga'];
 
     // Conectar con la base de datos
-    $conn = mysql_connect("$sql_host","$sql_usuario","$sql_pass");
+    $conn = mysqli_connect("$sql_host","$sql_usuario","$sql_pass");
     // Seleccionar la BBDD
-    mysql_select_db("$sql_db",$conn); 
+    mysqli_select_db($conn,"$sql_db");
 
     // Sentencia SQL para comprobar si ya existe una jornada con ese ID en esa liga
     $ssql = "SELECT ID FROM jornada WHERE ID='".$idJornada."' AND liga='".$_SESSION['idLiga']."'";
 
     // Ejecutar la sentencia
-    $rs = mysql_query($ssql,$conn);
+    $rs = mysqli_query($conn,$ssql);
 
-    if (mysql_num_rows($rs) > 0){
-      mysql_free_result($rs);
-      mysql_close();
+    if (mysqli_num_rows($rs) > 0){
+      mysqli_free_result($rs);
+      mysqli_close($conn);
       $_SESSION['error'] = "El n&uacute;mero de jornada ".$idJornada." ya est&aacute; siendo utilizado";
-      // Volver a presentar la página
+      // Volver a presentar la pï¿½gina
       header("Location: liga-config-jornadas.php?order=".$order);
       die;
     }
-    mysql_free_result($rs);
+    mysqli_free_result($rs);
 
     // Sentencia SQL para incluir la nueva jornada
     $ssql = "INSERT INTO jornada (ID,fecha,liga)
              VALUES ('".$idJornada."','".parseFecha($fechaJornada)."','".$idLiga."')";
     // Ejecutar la sentencia
-    $rs = mysql_query($ssql,$conn);
-    mysql_close();
+    $rs = mysqli_query($conn,$ssql);
+    mysqli_close($conn);
 
-    // Establecer la variable de sesión con el identificador de la jornada actual
+    // Establecer la variable de sesiï¿½n con el identificador de la jornada actual
     $_SESSION['idJornada'] = $idJornada;
-    // Volver a presentar la página
+    // Volver a presentar la pï¿½gina
     header("Location: liga-config-jornadas.php?order=".$order);
   }
   else if ($_GET['action'] == "editarPartidos") {
     $idJornada   = $_GET['id'];
-    // Establecer una variable de sesión con el ID de la jornada
+    // Establecer una variable de sesiï¿½n con el ID de la jornada
     $_SESSION['idJornada'] = $idJornada;
-    // Volver a presentar la página
+    // Volver a presentar la pï¿½gina
     header("Location: liga-config-jornadas.php?order=".$order);
   }
   else if ($_GET['action'] == "editarPartido") {
     $idPartido   = $_GET['id'];
-    // Establecer una variable de sesión con el ID del partido
+    // Establecer una variable de sesiï¿½n con el ID del partido
     $_SESSION['idPartido'] = $idPartido;
-    // Volver a presentar la página
+    // Volver a presentar la pï¿½gina
     header("Location: liga-config-jornadas.php?order=".$order);
   }
   else if ($_GET['action'] == "cambiarPartido") {
@@ -163,16 +163,16 @@ if (isset($_GET['action'])) {
     $idPartido    = $_SESSION['idPartido'];
     
     // Conectar con la base de datos
-    $conn = mysql_connect("$sql_host","$sql_usuario","$sql_pass");
+    $conn = mysqli_connect("$sql_host","$sql_usuario","$sql_pass");
     // Seleccionar la BBDD
-    mysql_select_db("$sql_db",$conn); 
+    mysqli_select_db($conn,"$sql_db");
     
     $ssql = "DELETE FROM juega WHERE
              partido='".$_SESSION['idPartido']."' AND
              jornada='".$_SESSION['idJornada']."' AND
              liga='".$_SESSION['idLiga']."'";
     // Ejecutar la sentencia
-    $rs = mysql_query($ssql,$conn);
+    $rs = mysqli_query($conn,$ssql);
     
     // Guardar el resultado (si es que se ha especificado)
     if ((strlen($resLocal) > 0) && (strlen($resVisitante) > 0)) {
@@ -180,38 +180,38 @@ if (isset($_GET['action'])) {
                VALUES ('".$resLocal."','".$resVisitante."','".$idPartido."','".
                        $_SESSION['idJornada']."','".$_SESSION['idLiga']."')";
       // Ejecutar la sentencia
-      $rs = mysql_query($ssql,$conn);
+      $rs = mysqli_query($conn,$ssql);
     }
-    mysql_close();
+    mysqli_close($conn);
 
-    // Borrar la variable de sesión que guarda el ID del partido a editar
+    // Borrar la variable de sesiï¿½n que guarda el ID del partido a editar
     unset($_SESSION['idPartido']);
-    // Volver a presentar la página
+    // Volver a presentar la pï¿½gina
     header("Location: liga-config-jornadas.php?order=".$order);
   }
   else if ($_GET['action'] == "borrarPartido") {
     $idPartido = $_GET['id'];
     // Conectar con la base de datos
-    $conn = mysql_connect("$sql_host","$sql_usuario","$sql_pass");
+    $conn = mysqli_connect("$sql_host","$sql_usuario","$sql_pass");
     // Seleccionar la BBDD
-    mysql_select_db("$sql_db",$conn); 
+    mysqli_select_db($conn,"$sql_db");
     
     $ssql = "DELETE FROM juega WHERE
              partido='".$idPartido."' AND
              jornada='".$_SESSION['idJornada']."' AND
              liga='".$_SESSION['idLiga']."'";
     // Ejecutar la sentencia
-    $rs = mysql_query($ssql,$conn);
+    $rs = mysqli_query($conn,$ssql);
 
     $ssql = "DELETE FROM partido WHERE
              ID='".$idPartido."' AND
              jornada='".$_SESSION['idJornada']."' AND
              liga='".$_SESSION['idLiga']."'";
     // Ejecutar la sentencia
-    $rs = mysql_query($ssql,$conn);
-    mysql_close();
+    $rs = mysqli_query($conn,$ssql);
+    mysqli_close($conn);
 
-    // Volver a presentar la página
+    // Volver a presentar la pï¿½gina
     header("Location: liga-config-jornadas.php?order=".$order);
   }
 }
@@ -261,18 +261,18 @@ echo "
 // Obtener el listado de jornadas
 
 // Conectar con la base de datos
-$conn = mysql_connect("$sql_host","$sql_usuario","$sql_pass");
+$conn = mysqli_connect("$sql_host","$sql_usuario","$sql_pass");
 // Seleccionar la BBDD
-mysql_select_db("$sql_db",$conn); 
+mysqli_select_db($conn,"$sql_db");
 
 // Sentencia SQL para obtener el listado de jornadas ya incluidas en la liga
 $ssql = "SELECT ID,fecha FROM jornada WHERE liga='".$_SESSION['idLiga']."' ORDER BY ".$order;
 
 // Ejecutar la sentencia
-$rs = mysql_query($ssql,$conn);
+$rs = mysqli_query($conn,$ssql);
 
 $indice = 0;
-while($jornada = mysql_fetch_array($rs)) {
+while($jornada = mysqli_fetch_array($rs)) {
   // Escribir fila a fila cada jornada
   ($indice % 2 == 0) ? ($paridad="even") : ($paridad="odd");
   $link_borrado = "liga-config-jornadas.php?order=".$order."&action=borrarJornada&id=".$jornada['ID'];
@@ -298,8 +298,8 @@ while($jornada = mysql_fetch_array($rs)) {
     ";
   $indice++;
 }
-mysql_free_result($rs);
-mysql_close();
+mysqli_free_result($rs);
+mysqli_close($conn);
 
 echo "
       </table>
@@ -337,7 +337,7 @@ if (isset($_SESSION['error'])) {
   unset($_SESSION['error']);
 }
 
-// Guardar en una variable un texto con el número de jornada
+// Guardar en una variable un texto con el nï¿½mero de jornada
 if (isset($_SESSION['idJornada'])) {
   $partidosJornada = " de la jornada ".$_SESSION['idJornada'];
 }
@@ -396,9 +396,9 @@ if (isset($_SESSION['idJornada']))
   ";
 
   // Conectar con la base de datos
-  $conn = mysql_connect("$sql_host","$sql_usuario","$sql_pass");
+  $conn = mysqli_connect("$sql_host","$sql_usuario","$sql_pass");
   // Seleccionar la BBDD
-  mysql_select_db("$sql_db",$conn); 
+  mysqli_select_db($conn,"$sql_db");
   
   // Sentencia SQL para obtener el listado de partidos ya incluidos en la jornada
   $ssql = "
@@ -427,16 +427,16 @@ ORDER BY ID
 ";
   
   // Ejecutar la sentencia
-  $rs = mysql_query($ssql,$conn);
+  $rs = mysqli_query($conn,$ssql);
   
-  // Comprobar si se tiene que editar los datos de algún partido
+  // Comprobar si se tiene que editar los datos de algï¿½n partido
   if (isset($_SESSION['idPartido']))
     $idPartidoEdicion = $_SESSION['idPartido'];
   else
     $idPartidoEdicion = -1;
   
   $indice = 0;
-  while($partido = mysql_fetch_array($rs)) {
+  while($partido = mysqli_fetch_array($rs)) {
     // Escribir fila a fila cada partido
     ($indice % 2 == 0) ? ($paridad="evenPartido") : ($paridad="oddPartido");
     echo "
@@ -494,8 +494,8 @@ ORDER BY ID
       ";
     $indice++;
   }
-  mysql_free_result($rs);
-  mysql_close();
+  mysqli_free_result($rs);
+  mysqli_close($conn);
   
   echo "
       <tr>
@@ -539,15 +539,15 @@ ORDER BY ID
   // Obtener el listado de equipos
   
   // Conectar con la base de datos
-  $conn = mysql_connect("$sql_host","$sql_usuario","$sql_pass");
+  $conn = mysqli_connect("$sql_host","$sql_usuario","$sql_pass");
   // Seleccionar la BBDD
-  mysql_select_db("$sql_db",$conn); 
+  mysqli_select_db($conn,"$sql_db");
   
   // Sentencia SQL para obtener el listado de equipos que participan en la liga
   $ssql = "SELECT ID,nombre,campo FROM equipo WHERE liga='".$_SESSION['idLiga']."' ORDER BY nombre ASC,ID ASC";
   
   // Ejecutar la sentencia
-  $rs = mysql_query($ssql,$conn);
+  $rs = mysqli_query($conn,$ssql);
   
   echo "
           <td align=\"right\">
@@ -558,7 +558,7 @@ ORDER BY ID
               var idEquipo = new Array()
   ";
   $k = 0;
-  while($equipo = mysql_fetch_array($rs)) {
+  while($equipo = mysqli_fetch_array($rs)) {
     echo "
               thecontents[".$k."]='".$equipo['campo']."'
               idEquipo[".$k."]='".$equipo['ID']."'
@@ -577,11 +577,11 @@ ORDER BY ID
             </script>
   ";
 
-  $rows = mysql_num_rows($rs);
+  $rows = mysqli_num_rows($rs);
   if ($rows>0)
-    mysql_data_seek($rs, 0);
+    mysqli_data_seek($rs, 0);
 
-  while($equipo = mysql_fetch_array($rs)) {
+  while($equipo = mysqli_fetch_array($rs)) {
     // Escribir fila a fila cada equipo (LOCAL)
     echo "
               <option>".$equipo['nombre']."</option>
@@ -601,11 +601,11 @@ ORDER BY ID
           <td align=\"left\">
             <select name=\"visitantes\" size=\"1\" onChange=\"changeIdVisitante(this);\">
   ";
-  $rows = mysql_num_rows($rs);
+  $rows = mysqli_num_rows($rs);
   if($rows>0)
-    mysql_data_seek($rs, 0);
+    mysqli_data_seek($rs, 0);
   
-  while($equipo = mysql_fetch_array($rs)) {
+  while($equipo = mysqli_fetch_array($rs)) {
     // Escribir fila a fila cada equipo (VISITANTE)
     echo "
               <option>".$equipo['nombre']."</option>
@@ -627,8 +627,8 @@ ORDER BY ID
   ";
 
   // Liberar los datos de la lista de equipos
-  mysql_free_result($rs);
-  mysql_close();
+  mysqli_free_result($rs);
+  mysqli_close($conn);
 
   echo "
       </table>

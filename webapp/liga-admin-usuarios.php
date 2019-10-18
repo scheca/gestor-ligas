@@ -4,8 +4,8 @@
 //
 //     Copyright (C) 2005 Sergio Checa Blanco, sergio.checa@gmail.com
 //
-//     Este documento puede ser usado en los términos descritos en la
-//     Licencia Pública GNU versión 2 o posterior.
+//     Este documento puede ser usado en los tï¿½rminos descritos en la
+//     Licencia Pï¿½blica GNU versiï¿½n 2 o posterior.
 //
 //
 //-----------------------------------------------------------------------
@@ -18,9 +18,9 @@ require_once('lib/liga-col-izquierda.php');
 require_once('lib/liga-final.php');
 require_once('config/bd_config.inc.php');
 
-$nivel_acceso = 0; // Definir nivel de acceso para esta página.
+$nivel_acceso = 0; // Definir nivel de acceso para esta pï¿½gina.
 if ($_SESSION['usuario_nivel'] > $nivel_acceso){
-  header ("Location: liga-error.php?error=No+dispone+de+privilegios+de+aministración.+Acceso+denegado.");
+  header ("Location: liga-error.php?error=No+dispone+de+privilegios+de+aministraciï¿½n.+Acceso+denegado.");
   exit;
 }
 
@@ -43,18 +43,18 @@ if (isset($_GET['action'])) {
     $direccion = $_POST['direccion'];
     
     // Conectar con la base de datos
-    $conn = mysql_connect("$sql_host","$sql_usuario","$sql_pass");
+    $conn = mysqli_connect("$sql_host","$sql_usuario","$sql_pass");
     // Seleccionar la BBDD
-    mysql_select_db("$sql_db",$conn); 
+    mysqli_select_db($conn,"$sql_db");
 
     // Sentencia SQL para comprobar si ya existe un usuario con ese login
     $ssql = "SELECT * FROM usuario WHERE login='$login'";
 
     // Ejecutar la sentencia
-    $rs = mysql_query($ssql,$conn);
+    $rs = mysqli_query($conn,$ssql);
 
-    if (mysql_num_rows($rs)==0){
-      // Sentencia SQL para actualizar la información del usuario
+    if (mysqli_num_rows($rs)==0){
+      // Sentencia SQL para actualizar la informaciï¿½n del usuario
       $ssql = "UPDATE usuario SET
                login='".$login."',
                nombre='".$nombre."',
@@ -65,13 +65,13 @@ if (isset($_GET['action'])) {
                WHERE ID='".$id."'";
 
       // Ejecutar la sentencia de insercion
-      $rs = mysql_query($ssql,$conn);
-      mysql_close();
+      $rs = mysqli_query($conn,$ssql);
+      mysqli_close($conn);
       header ("Location: liga-admin-usuarios.php?order=".$order);
       die;
     }
     else {
-      mysql_close();
+      mysqli_close($conn);
       // Si ya existe un usuario con ese login, se debe indicar el error
       header ("Location: liga-admin-usuarios.php?login=$login&status=wrong&order=".$order);
       die;
@@ -82,57 +82,57 @@ if (isset($_GET['action'])) {
     // Tratar el borrado de usuarios (si se ha especificado)
     if ($_GET['action'] == "borrar") {
       // Conectar con la base de datos
-      $conn = mysql_connect("$sql_host","$sql_usuario","$sql_pass");
+      $conn = mysqli_connect("$sql_host","$sql_usuario","$sql_pass");
       // Seleccionar la BBDD
-      mysql_select_db("$sql_db",$conn); 
+      mysqli_select_db($conn,"$sql_db");
 	
       // Sentencia SQL para obtener las ligas del usuario a borrar
       $ssql = "SELECT id FROM liga WHERE usuario='".$id."'";
       // Ejecutar la sentencia
-      $rs = mysql_query($ssql,$conn);
+      $rs = mysqli_query($conn,$ssql);
 
       // Borrar una a una las ligas del usuario
-      while ($liga = mysql_fetch_array($rs)) {
+      while ($liga = mysqli_fetch_array($rs)) {
 	$id_a_borrar = $liga['id'];
 	// Sentencia SQL para borrar la liga
 	$ssql = "DELETE FROM juega WHERE liga=".$id_a_borrar;
 	// Ejecutar la sentencia
-	mysql_query($ssql,$conn);
+	mysqli_query($conn,$ssql);
 	
 	// Sentencia SQL para borrar la liga
 	$ssql = "DELETE FROM partido WHERE liga=".$id_a_borrar;
 	// Ejecutar la sentencia
-	mysql_query($ssql,$conn);
+	mysqli_query($conn,$ssql);
 	
 	// Sentencia SQL para borrar la liga
 	$ssql = "DELETE FROM jornada WHERE liga=".$id_a_borrar;
 	// Ejecutar la sentencia
-	mysql_query($ssql,$conn);
+	mysqli_query($conn,$ssql);
 
 	// Sentencia SQL para borrar la liga
 	$ssql = "DELETE FROM equipo WHERE liga=".$id_a_borrar;
 	// Ejecutar la sentencia
-	mysql_query($ssql,$conn);
+	mysqli_query($conn,$ssql);
 	
 	// Sentencia SQL para borrar la liga
 	$ssql = "DELETE FROM categoria_candidata WHERE liga=".$id_a_borrar;
 	// Ejecutar la sentencia
-	mysql_query($ssql,$conn);
+	mysqli_query($conn,$ssql);
 	
 	// Sentencia SQL para borrar la liga
 	$ssql = "DELETE FROM liga WHERE id=".$id_a_borrar;
 	// Ejecutar la sentencia
-	mysql_query($ssql,$conn);
+	mysqli_query($conn,$ssql);
       }
 
       // Sentencia SQL para obtener las ligas del usuario a borrar
       $ssql = "DELETE FROM usuario WHERE id='".$id."'";
       // Ejecutar la sentencia
-      mysql_query($ssql,$conn);
+      mysqli_query($conn,$ssql);
       
-      mysql_free_result($rs);
-      mysql_close();
-      // Volver a presentar la página
+      mysqli_free_result($rs);
+      mysqli_close($conn);
+      // Volver a presentar la pï¿½gina
       header("Location: liga-admin-usuarios.php?order=".$order);
     }
   }
@@ -157,23 +157,23 @@ if (isset($_GET['action'])) {
   if (isset($_GET['id'])) {
     $id = $_GET['id'];
     if ($_GET['action'] == "editar") {
-      // Obtener la información del usuario que se quiere editar
+      // Obtener la informaciï¿½n del usuario que se quiere editar
 	
       // Conectar con la base de datos
-      $conn = mysql_connect("$sql_host","$sql_usuario","$sql_pass");
+      $conn = mysqli_connect("$sql_host","$sql_usuario","$sql_pass");
       // Seleccionar la BBDD
-      mysql_select_db("$sql_db",$conn); 
+      mysqli_select_db($conn,"$sql_db");
     
       // Sentencia SQL para obtener el listado de usuarios (menos el admin)
       $ssql = "SELECT login,nombre,apellidos,email,direccion,telefono FROM usuario WHERE ID='".$id."'";
    
       // Ejecutar la sentencia
-      $rs = mysql_query($ssql,$conn);
-      $usuario = mysql_fetch_array($rs);
-      mysql_free_result($rs);
-      mysql_close();
+      $rs = mysqli_query($conn,$ssql);
+      $usuario = mysqli_fetch_array($rs);
+      mysqli_free_result($rs);
+      mysqli_close($conn);
 
-      // Presentar el formulario de edición de usuarios
+      // Presentar el formulario de ediciï¿½n de usuarios
       echo "
     <h3>Edite la informaci&oacute;n del usuario</h3>
     <div align=\"center\">
@@ -270,18 +270,18 @@ echo "
 // Obtener el listado de usuarios (salvo el admin)
 
 // Conectar con la base de datos
-$conn = mysql_connect("$sql_host","$sql_usuario","$sql_pass");
+$conn = mysqli_connect("$sql_host","$sql_usuario","$sql_pass");
 // Seleccionar la BBDD
-mysql_select_db("$sql_db",$conn); 
+mysqli_select_db($conn,"$sql_db");
 
 // Sentencia SQL para obtener el listado de usuarios (menos el admin)
 $ssql = "SELECT ID,login,nombre,apellidos,email,direccion,telefono FROM usuario WHERE login!='admin' ORDER BY ".$order;
 
 // Ejecutar la sentencia
-$rs = mysql_query($ssql,$conn);
+$rs = mysqli_query($conn,$ssql);
 
 $indice = 0;
-while($usuario = mysql_fetch_array($rs)) {
+while($usuario = mysqli_fetch_array($rs)) {
   // Escribir fila a fila cada usuario
   ($indice % 2 == 0) ? ($paridad="even") : ($paridad="odd");
   $link_borrado = "liga-admin-usuarios.php?order=".$order."&action=borrar&id=".$usuario['ID'];
@@ -307,8 +307,8 @@ while($usuario = mysql_fetch_array($rs)) {
     ";
   $indice++;
 }
-mysql_free_result($rs);
-mysql_close();
+mysqli_free_result($rs);
+mysqli_close($conn);
 
 echo "
     </table>

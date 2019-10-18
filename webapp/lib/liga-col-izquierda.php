@@ -4,8 +4,8 @@
 //
 //     Copyright (C) 2005 Sergio Checa Blanco, sergio.checa@gmail.com
 //
-//     Este documento puede ser usado en los términos descritos en la
-//     Licencia Pública GNU versión 2 o posterior.
+//     Este documento puede ser usado en los tï¿½rminos descritos en la
+//     Licencia Pï¿½blica GNU versiï¿½n 2 o posterior.
 //
 //
 //-----------------------------------------------------------------------
@@ -130,14 +130,14 @@ function columna_izquierda()
            ORDER BY liga.deporte, nombre ASC
            ";
   // Conectar con la base de datos
-  $conn = mysql_connect("$sql_host","$sql_usuario","$sql_pass");
+  $conn = mysqli_connect("$sql_host","$sql_usuario","$sql_pass");
   // Seleccionar la BBDD
-  mysql_select_db("$sql_db",$conn);
+  mysqli_select_db($conn,"$sql_db");
   // Ejecutar la sentencia
-  $rs = mysql_query($ssql,$conn);
+  $rs = mysqli_query($conn,$ssql);
 
   $catAnterior = -1;
-  while($liga = mysql_fetch_array($rs)) {
+  while($liga = mysqli_fetch_array($rs)) {
     if ($liga['cod_deporte'] != $catAnterior) {
       if ($catAnterior != -1) {
 	echo "
@@ -174,9 +174,9 @@ function columna_izquierda()
           setfoldericonstate('".$catAnterior."');
         </script>
   ";
-  mysql_free_result($rs);
+  mysqli_free_result($rs);
 
-  // Representar las ligas que no están clasificadas
+  // Representar las ligas que no estï¿½n clasificadas
 
   $ssql = "SELECT liga.id,liga.nombre
            FROM liga
@@ -184,9 +184,9 @@ function columna_izquierda()
            ORDER BY liga.nombre ASC
            ";
   // Seleccionar la BBDD
-  mysql_select_db("$sql_db",$conn);
+  mysqli_select_db($conn,"$sql_db");
   // Ejecutar la sentencia
-  $rs = mysql_query($ssql,$conn);
+  $rs = mysqli_query($conn,$ssql);
 
   echo "
         <div class=\"separator\">
@@ -199,7 +199,7 @@ function columna_izquierda()
         <div id=\"-1\" style=\"display:none;\">
   ";
   
-  while($liga = mysql_fetch_array($rs)) {
+  while($liga = mysqli_fetch_array($rs)) {
     echo "
         &nbsp;<a href=\"liga-clasificacion.php?idLiga=".$liga['id']."\" class=\"linkmenu\">".$liga['nombre']."</a><br />
     ";
@@ -214,7 +214,7 @@ function columna_izquierda()
         </div>
   ";
 
-  mysql_free_result($rs);
+  mysqli_free_result($rs);
 
   // Comprobar si se ha iniciado sesion
   if (isset($_SESSION['usuario_login']) && isset($_SESSION['usuario_password'])) {
